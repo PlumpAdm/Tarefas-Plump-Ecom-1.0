@@ -555,6 +555,26 @@ select option { background: var(--surface); }
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
+/* ── THEME (fora do async, executa imediatamente) ───────────── */
+(function() {
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    const sun  = document.getElementById('iconSun');
+    const moon = document.getElementById('iconMoon');
+    if (sun)  sun.style.display  = theme === 'dark'  ? 'block' : 'none';
+    if (moon) moon.style.display = theme === 'light' ? 'block' : 'none';
+    try { localStorage.setItem('plump-theme', theme); } catch(e) {}
+  }
+  let saved; try { saved = localStorage.getItem('plump-theme'); } catch(e) {}
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+
+  window.toggleTheme = function() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  };
+})();
+
 (async () => {
   /* ── STATE ─────────────────────────────────────────────────── */
   let db = null, user = null;
@@ -599,9 +619,28 @@ select option { background: var(--surface); }
   /* ── INIT ───────────────────────────────────────────────────── */
   document.getElementById('headerDate').textContent = todayBR();
 
+  // Verifica se está rodando no ambiente do Claude (artefato publicado)
+  if (typeof claude === 'undefined') {
+    document.getElementById('taskArea').innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="20" cy="20" r="16"/><path d="M20 13v7M20 24v2"/></svg>
+        <p><strong>Acesse pelo link do artefato</strong><br><br>
+        Esta versão do GitHub Pages é apenas visual.<br>
+        Para usar o sistema completo, acesse pelo Claude.ai.</p>
+      </div>`;
+    // Desativa botões que precisam do DB
+    document.getElementById('btnNewTask').disabled = true;
+    document.getElementById('btnManageOperators').disabled = true;
+    return;
+  }
+
   // Init db capability
-  db = await claude.use('db');
-  user = await claude.use('user');
+  try {
+    db = await claude.use('db');
+    user = await claude.use('user');
+  } catch(e) {
+    console.warn('Erro ao inicializar DB:', e);
+  }
 
   if (!db) {
     document.getElementById('taskArea').innerHTML = `
@@ -1002,26 +1041,6 @@ select option { background: var(--surface); }
       btn.textContent = editingTaskId ? 'Atualizar Tarefa' : 'Salvar Tarefa';
     }
   };
-
-  /* ── THEME TOGGLE ───────────────────────────────────────────── */
-  function applyTheme(theme) {
-    document.documentElement.setAttribute('data-theme', theme);
-    document.getElementById('iconSun').style.display  = theme === 'dark'  ? 'block' : 'none';
-    document.getElementById('iconMoon').style.display = theme === 'light' ? 'block' : 'none';
-    try { localStorage.setItem('plump-theme', theme); } catch(e) {}
-  }
-
-  window.toggleTheme = function() {
-    const current = document.documentElement.getAttribute('data-theme') || 'light';
-    applyTheme(current === 'dark' ? 'light' : 'dark');
-  };
-
-  // Apply saved or system theme on load
-  (function() {
-    let saved; try { saved = localStorage.getItem('plump-theme'); } catch(e) {}
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
-  })();
 
   /* ── TABS ───────────────────────────────────────────────────── */
   window.switchTab = function(tab) {
