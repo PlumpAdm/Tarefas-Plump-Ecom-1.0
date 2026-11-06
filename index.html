@@ -1,0 +1,1027 @@
+<title>Tarefas Plump Ecom 1.0</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+/* ── TOKENS ───────────────────────────────────────────────────────── */
+/* Layout: sidebar fixa + área de conteúdo scrollável */
+:root {
+  --bg:       #F7F8FA;
+  --surface:  #FFFFFF;
+  --border:   #E4E7EC;
+  --fg:       #111827;
+  --fg-muted: #6B7280;
+  --accent:   #2563EB;
+  --accent-bg:#EFF6FF;
+  --ok:       #16A34A;
+  --ok-bg:    #DCFCE7;
+  --warn:     #D97706;
+  --warn-bg:  #FEF3C7;
+  --danger:   #DC2626;
+  --danger-bg:#FEE2E2;
+  --progress:    #7C3AED;
+  --progress-bg: #EDE9FE;
+  --radius:   10px;
+  --shadow:   0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:       #0F1117;
+    --surface:  #1A1D27;
+    --border:   #2D3148;
+    --fg:       #F1F3F9;
+    --fg-muted: #8B92A5;
+    --accent:   #4F87FF;
+    --accent-bg:#1A2A4A;
+    --ok:       #34D399;
+    --ok-bg:    #0A2E1E;
+    --warn:     #FBBF24;
+    --warn-bg:  #2D1F00;
+    --danger:   #F87171;
+    --danger-bg:#2D0E0E;
+    --progress:    #A78BFA;
+    --progress-bg: #1E1040;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:       #0F1117;
+  --surface:  #1A1D27;
+  --border:   #2D3148;
+  --fg:       #F1F3F9;
+  --fg-muted: #8B92A5;
+  --accent:   #4F87FF;
+  --accent-bg:#1A2A4A;
+  --ok:       #34D399;
+  --ok-bg:    #0A2E1E;
+  --warn:     #FBBF24;
+  --warn-bg:  #2D1F00;
+  --danger:   #F87171;
+  --danger-bg:#2D0E0E;
+  --progress:    #A78BFA;
+  --progress-bg: #1E1040;
+  color-scheme: dark;
+}
+
+/* ── RESET / BASE ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding-left: max(0px, env(safe-area-inset-left, 0px));
+  padding-right: max(0px, env(safe-area-inset-right, 0px));
+}
+
+/* ── HEADER ───────────────────────────────────────────────────────── */
+.app-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 50;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-block: 12px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 51;
+  background: var(--surface);
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.header-logo {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.header-logo svg { width: 18px; height: 18px; }
+.header-title { font-size: 16px; font-weight: 700; letter-spacing: -.3px; }
+.header-subtitle { font-size: 11px; color: var(--fg-muted); font-weight: 500; letter-spacing: .3px; text-transform: uppercase; }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 7px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  border: 1px solid transparent; transition: opacity .15s;
+}
+.btn:active { opacity: .8; }
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-ghost { background: transparent; border-color: var(--border); color: var(--fg); }
+.btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ── TABS ─────────────────────────────────────────────────────────── */
+.tabs-bar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  gap: 0;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs-bar::-webkit-scrollbar { display: none; }
+.tab-btn {
+  padding: 10px 16px;
+  font-size: 13px; font-weight: 500;
+  color: var(--fg-muted);
+  border: none; background: none; cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color .15s, border-color .15s;
+}
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+.tab-btn:hover:not(.active) { color: var(--fg); }
+
+/* ── MAIN LAYOUT ──────────────────────────────────────────────────── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 20px max(16px, env(safe-area-inset-right, 0px)) 32px max(16px, env(safe-area-inset-left, 0px));
+  gap: 16px;
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+}
+.section-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .8px;
+  text-transform: uppercase; color: var(--fg-muted);
+  margin-bottom: 8px;
+}
+
+/* ── CARDS ────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.card-title { font-size: 14px; font-weight: 600; }
+.card-body { padding: 16px; }
+
+/* ── TASK ITEM ────────────────────────────────────────────────────── */
+.task-list { display: flex; flex-direction: column; gap: 0; }
+.task-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  transition: background .1s;
+}
+.task-item:last-child { border-bottom: none; }
+.task-item:hover { background: var(--bg); }
+.task-item.done { opacity: .65; }
+.task-item.in-progress { border-left: 3px solid var(--progress); }
+
+.task-check {
+  flex-shrink: 0;
+  width: 20px; height: 20px;
+  margin-top: 1px;
+  border: 2px solid var(--border);
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color .15s, background .15s;
+}
+.task-check:hover { border-color: var(--accent); }
+.task-check.checked { background: var(--ok); border-color: var(--ok); }
+.task-check.checked svg { display: block; }
+.task-check.in-progress { background: var(--progress-bg); border-color: var(--progress); }
+.task-check.in-progress svg { display: block; }
+.task-check svg { display: none; width: 12px; height: 12px; }
+
+.task-body { flex: 1; min-width: 0; }
+.task-name {
+  font-size: 14px; font-weight: 500; line-height: 1.4;
+  word-break: break-word;
+}
+.task-item.done .task-name { text-decoration: line-through; color: var(--fg-muted); }
+.task-meta {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 4px; align-items: center;
+}
+.tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 999px;
+  font-size: 11px; font-weight: 600; white-space: nowrap;
+}
+.tag-operator { background: var(--accent-bg); color: var(--accent); }
+.tag-done { background: var(--ok-bg); color: var(--ok); }
+.tag-pending { background: var(--warn-bg); color: var(--warn); }
+.tag-progress { background: var(--progress-bg); color: var(--progress); }
+.tag-time { background: var(--bg); border: 1px solid var(--border); color: var(--fg-muted); font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+
+.task-obs {
+  margin-top: 6px;
+  font-size: 12px; color: var(--fg-muted);
+  line-height: 1.5;
+  background: var(--bg);
+  border-left: 3px solid var(--accent);
+  padding: 5px 8px;
+  border-radius: 0 4px 4px 0;
+  word-break: break-word;
+}
+
+.task-actions {
+  display: flex; gap: 4px; flex-shrink: 0;
+  opacity: 0; transition: opacity .15s;
+}
+.task-item:hover .task-actions { opacity: 1; }
+.task-actions:focus-within { opacity: 1; }
+.icon-btn {
+  width: 28px; height: 28px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border); background: var(--surface);
+  cursor: pointer; color: var(--fg-muted);
+  transition: background .1s, color .1s;
+}
+.icon-btn:hover { background: var(--bg); color: var(--fg); }
+.icon-btn.danger:hover { background: var(--danger-bg); color: var(--danger); border-color: var(--danger); }
+.icon-btn svg { width: 13px; height: 13px; }
+
+/* ── EMPTY STATE ──────────────────────────────────────────────────── */
+.empty-state {
+  text-align: center; padding: 48px 24px;
+  color: var(--fg-muted);
+}
+.empty-state svg { width: 40px; height: 40px; margin: 0 auto 12px; opacity: .3; }
+.empty-state p { font-size: 14px; }
+
+/* ── MODAL ────────────────────────────────────────────────────────── */
+.modal-backdrop {
+  position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,.45);
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px;
+}
+.modal-backdrop[hidden] { display: none; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  width: 100%; max-width: 480px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.2);
+  overflow: hidden;
+}
+.modal-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-title { font-size: 15px; font-weight: 700; }
+.modal-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.modal-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex; gap: 8px; justify-content: flex-end;
+}
+
+label { font-size: 12px; font-weight: 600; color: var(--fg-muted); display: block; margin-bottom: 4px; letter-spacing: .2px; }
+input[type=text], textarea, select {
+  width: 100%; padding: 9px 11px;
+  background: var(--bg); color: var(--fg);
+  border: 1px solid var(--border); border-radius: 7px;
+  font-family: inherit; font-size: 14px;
+  transition: border-color .15s;
+  outline: none;
+}
+input[type=text]:focus, textarea:focus, select:focus { border-color: var(--accent); }
+textarea { resize: vertical; min-height: 72px; }
+select option { background: var(--surface); }
+
+/* ── OBS INLINE FORM ──────────────────────────────────────────────── */
+.obs-form {
+  margin-top: 8px;
+  display: flex; gap: 6px; flex-direction: column;
+}
+.obs-form-row { display: flex; gap: 6px; }
+
+/* ── STATUS BAR ───────────────────────────────────────────────────── */
+.status-bar {
+  display: flex; gap: 12px; flex-wrap: wrap;
+}
+.stat-tile {
+  flex: 1; min-width: 100px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.stat-tile .stat-num {
+  font-size: 24px; font-weight: 700; line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.stat-tile .stat-label { font-size: 11px; color: var(--fg-muted); margin-top: 3px; font-weight: 500; }
+.stat-tile.accent .stat-num { color: var(--accent); }
+.stat-tile.ok .stat-num { color: var(--ok); }
+.stat-tile.warn .stat-num { color: var(--warn); }
+
+/* ── FILTERS ──────────────────────────────────────────────────────── */
+.filters {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+}
+.filter-select {
+  padding: 6px 10px; border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--surface); color: var(--fg);
+  font-size: 13px; font-family: inherit;
+  cursor: pointer;
+}
+.filter-select:focus { outline: none; border-color: var(--accent); }
+.search-input {
+  flex: 1; min-width: 140px;
+  padding: 6px 10px; border-radius: 7px;
+  border: 1px solid var(--border);
+  background: var(--surface); color: var(--fg);
+  font-size: 13px; font-family: inherit;
+}
+.search-input:focus { outline: none; border-color: var(--accent); }
+.search-input::placeholder { color: var(--fg-muted); }
+
+/* ── LOADING ──────────────────────────────────────────────────────── */
+.loading {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; padding: 32px;
+  color: var(--fg-muted); font-size: 13px;
+}
+.spinner {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── TOAST ────────────────────────────────────────────────────────── */
+.toast-container {
+  position: fixed;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 16px);
+  right: max(16px, env(safe-area-inset-right, 0px));
+  z-index: 200;
+  display: flex; flex-direction: column; gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--fg); color: var(--bg);
+  padding: 10px 16px; border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  box-shadow: 0 4px 16px rgba(0,0,0,.2);
+  animation: toastIn .2s ease;
+  pointer-events: none;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateY(8px); } }
+
+/* ── RESPONSIVE ───────────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .header-subtitle { display: none; }
+  .status-bar { gap: 8px; }
+  .stat-tile { min-width: 80px; padding: 10px 12px; }
+  .stat-tile .stat-num { font-size: 20px; }
+  .task-actions { opacity: 1; }
+}
+</style>
+
+<!-- ── HEADER ───────────────────────────────────────────────────── -->
+<header class="app-header">
+  <div class="header-left">
+    <div class="header-logo">
+      <svg viewBox="0 0 18 18" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="3" width="14" height="12" rx="2"/>
+        <path d="M6 7h6M6 10h4"/>
+        <circle cx="14" cy="14" r="3" fill="white" stroke="none"/>
+        <path d="M13 14l1 1 2-2" stroke="#2563EB" stroke-width="1.5"/>
+      </svg>
+    </div>
+    <div>
+      <div class="header-title">Tarefas Plump Ecom 1.0</div>
+      <div class="header-subtitle" id="headerDate">Carregando…</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-ghost" id="btnManageOperators" onclick="openManageOperators()">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="4" r="2.2"/><path d="M2 11.5c0-2.2 2.2-4 5-4s5 1.8 5 4"/></svg>
+      Operadores
+    </button>
+    <button class="btn btn-primary" id="btnNewTask" onclick="openNewTask()">
+      <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 2v10M2 7h10"/></svg>
+      Nova Tarefa
+    </button>
+  </div>
+</header>
+
+<!-- ── TABS ─────────────────────────────────────────────────────── -->
+<nav class="tabs-bar" id="tabsBar">
+  <button class="tab-btn active" data-tab="hoje" onclick="switchTab('hoje')">Hoje</button>
+  <button class="tab-btn" data-tab="historico" onclick="switchTab('historico')">Histórico</button>
+  <button class="tab-btn" data-tab="operadores" onclick="switchTab('operadores')">Por Operador</button>
+</nav>
+
+<!-- ── MAIN ─────────────────────────────────────────────────────── -->
+<main class="main">
+
+  <!-- STATS -->
+  <div class="status-bar" id="statsBar">
+    <div class="stat-tile accent"><div class="stat-num" id="statTotal">—</div><div class="stat-label">Total hoje</div></div>
+    <div class="stat-tile ok"><div class="stat-num" id="statDone">—</div><div class="stat-label">Concluídas</div></div>
+    <div class="stat-tile" style="--c:var(--progress)"><div class="stat-num" id="statProgress" style="color:var(--progress)">—</div><div class="stat-label">Em andamento</div></div>
+    <div class="stat-tile warn"><div class="stat-num" id="statPending">—</div><div class="stat-label">Pendentes</div></div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters" id="filtersRow">
+    <input class="search-input" id="searchInput" type="text" placeholder="Buscar tarefa…" oninput="renderTasks()">
+    <select class="filter-select" id="filterOperator" onchange="renderTasks()">
+      <option value="">Todos os operadores</option>
+    </select>
+    <select class="filter-select" id="filterStatus" onchange="renderTasks()">
+      <option value="">Todos os status</option>
+      <option value="pendente">Pendente</option>
+      <option value="em_andamento">Em andamento</option>
+      <option value="concluido">Concluído</option>
+    </select>
+  </div>
+
+  <!-- TASK LIST AREA -->
+  <div id="taskArea">
+    <div class="loading"><div class="spinner"></div> Carregando tarefas…</div>
+  </div>
+
+</main>
+
+<!-- ── MODALS ────────────────────────────────────────────────────── -->
+
+<!-- New/Edit Task -->
+<div class="modal-backdrop" id="modalTask" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTaskTitle">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTaskTitle">Nova Tarefa</span>
+      <button class="icon-btn" onclick="closeModal('modalTask')" aria-label="Fechar">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div>
+        <label for="taskNameInput">Nome da Tarefa *</label>
+        <input type="text" id="taskNameInput" placeholder="Ex: Separar pedidos Shopee" maxlength="200">
+      </div>
+      <div>
+        <label for="taskOperatorInput">Operador *</label>
+        <select id="taskOperatorInput">
+          <option value="">Selecione o operador…</option>
+        </select>
+      </div>
+      <div>
+        <label for="taskObsInput">Observação (opcional)</label>
+        <textarea id="taskObsInput" placeholder="Detalhes, instruções ou contexto…" rows="3"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalTask')">Cancelar</button>
+      <button class="btn btn-primary" id="btnSaveTask" onclick="saveTask()">Salvar Tarefa</button>
+    </div>
+  </div>
+</div>
+
+<!-- Obs Modal (check task) -->
+<div class="modal-backdrop" id="modalObs" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalObsTitle">
+    <div class="modal-header">
+      <span class="modal-title" id="modalObsTitle">Concluir Tarefa</span>
+      <button class="icon-btn" onclick="closeModal('modalObs')" aria-label="Fechar">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:14px;line-height:1.5;color:var(--fg-muted)" id="obsTaskName"></p>
+      <div>
+        <label for="obsTextInput">Observação de conclusão (opcional)</label>
+        <textarea id="obsTextInput" placeholder="O que foi feito? Alguma ocorrência?" rows="4"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalObs')">Cancelar</button>
+      <button class="btn btn-primary" id="btnConfirmObs" onclick="confirmCheckTask()">✓ Marcar Concluída</button>
+    </div>
+  </div>
+</div>
+
+<!-- Manage Operators -->
+<div class="modal-backdrop" id="modalOperators" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalOperatorsTitle">
+    <div class="modal-header">
+      <span class="modal-title" id="modalOperatorsTitle">Operadores</span>
+      <button class="icon-btn" onclick="closeModal('modalOperators')" aria-label="Fechar">
+        <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;gap:8px">
+        <input type="text" id="newOperatorName" placeholder="Nome do operador…" maxlength="60" style="flex:1" onkeydown="if(event.key==='Enter')addOperator()">
+        <button class="btn btn-primary" onclick="addOperator()" style="flex-shrink:0">Adicionar</button>
+      </div>
+      <div id="operatorsList" style="display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('modalOperators')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+(async () => {
+  /* ── STATE ─────────────────────────────────────────────────── */
+  let db = null, user = null;
+  let tasks = {};       // { id: taskObj }
+  let operators = {};   // { id: { name, createdAt } }
+  let currentTab = 'hoje';
+  let editingTaskId = null;
+  let checkingTaskId = null;
+  let loadTimeout = null;
+
+  /* ── UTILS ──────────────────────────────────────────────────── */
+  function nowISO() { return new Date().toISOString(); }
+
+  function brDatetime(iso) {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return d.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo', day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  }
+
+  function todayBR() {
+    return new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo', weekday:'long', day:'2-digit', month:'long', year:'numeric' });
+  }
+
+  function todayKey() {
+    return new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo', day:'2-digit', month:'2-digit', year:'numeric' }).split('/').reverse().join('-');
+  }
+
+  function sanitize(s) {
+    const d = document.createElement('div');
+    d.textContent = s || '';
+    return d.innerHTML;
+  }
+
+  function toast(msg, dur = 2800) {
+    const el = document.createElement('div');
+    el.className = 'toast';
+    el.textContent = msg;
+    document.getElementById('toastContainer').appendChild(el);
+    setTimeout(() => el.remove(), dur);
+  }
+
+  /* ── INIT ───────────────────────────────────────────────────── */
+  document.getElementById('headerDate').textContent = todayBR();
+
+  // Init db capability
+  db = await claude.use('db');
+  user = await claude.use('user');
+
+  if (!db) {
+    document.getElementById('taskArea').innerHTML = `
+      <div class="empty-state">
+        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="20" cy="20" r="16"/><path d="M20 13v7M20 24v2"/></svg>
+        <p>Banco de dados indisponível nesta sessão.<br>Abra o artefato publicado para usar.</p>
+      </div>`;
+    return;
+  }
+
+  /* ── SUBSCRIPTIONS ──────────────────────────────────────────── */
+  // Set timeout
+  loadTimeout = setTimeout(() => {
+    if (Object.keys(tasks).length === 0) {
+      document.getElementById('taskArea').innerHTML = `<div class="loading"><div class="spinner"></div> Aguardando conexão…</div>`;
+    }
+  }, 10000);
+
+  // Subscribe to operators
+  db.collection('operators').onSnapshot(snap => {
+    operators = {};
+    snap.docs.forEach(d => { if (d.exists) operators[d.id] = d.data(); });
+    renderOperatorDropdowns();
+    if (currentTab === 'operadores') renderOperatorView();
+  }, err => console.warn('operators snap err', err));
+
+  // Subscribe to tasks
+  db.collection('tasks').onSnapshot(snap => {
+    clearTimeout(loadTimeout);
+    tasks = {};
+    snap.docs.forEach(d => { if (d.exists) tasks[d.id] = { id: d.id, ...d.data() }; });
+    renderTasks();
+    updateStats();
+  }, err => {
+    clearTimeout(loadTimeout);
+    document.getElementById('taskArea').innerHTML = `<div class="empty-state"><p>Erro ao carregar tarefas.</p></div>`;
+    console.warn('tasks snap err', err);
+  });
+
+  /* ── OPERATORS ──────────────────────────────────────────────── */
+  function renderOperatorDropdowns() {
+    const opts = Object.entries(operators)
+      .sort((a,b) => (a[1].name||'').localeCompare(b[1].name||''))
+      .map(([id, o]) => `<option value="${id}">${sanitize(o.name)}</option>`)
+      .join('');
+
+    document.getElementById('taskOperatorInput').innerHTML = `<option value="">Selecione o operador…</option>${opts}`;
+
+    const filterOp = document.getElementById('filterOperator');
+    const curVal = filterOp.value;
+    filterOp.innerHTML = `<option value="">Todos os operadores</option>${opts}`;
+    filterOp.value = curVal;
+  }
+
+  function renderOperatorsList() {
+    const list = document.getElementById('operatorsList');
+    const entries = Object.entries(operators).sort((a,b) => (a[1].name||'').localeCompare(b[1].name||''));
+    if (!entries.length) {
+      list.innerHTML = `<div style="color:var(--fg-muted);font-size:13px;padding:8px 0">Nenhum operador cadastrado.</div>`;
+      return;
+    }
+    list.innerHTML = entries.map(([id, o]) => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--bg);border-radius:7px;border:1px solid var(--border)">
+        <span style="font-size:14px;font-weight:500">${sanitize(o.name)}</span>
+        <button class="icon-btn danger" onclick="deleteOperator('${id}')" title="Remover">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3.5 4l.7 7.5h5.6l.7-7.5"/></svg>
+        </button>
+      </div>`).join('');
+  }
+
+  async function addOperator() {
+    const inp = document.getElementById('newOperatorName');
+    const name = inp.value.trim();
+    if (!name) return;
+    const existing = Object.values(operators).find(o => o.name.toLowerCase() === name.toLowerCase());
+    if (existing) { toast('Operador já existe!'); return; }
+    try {
+      await db.collection('operators').add({ name, createdAt: nowISO() });
+      inp.value = '';
+      toast(`Operador "${name}" adicionado`);
+    } catch(e) { toast('Erro ao adicionar operador'); console.warn(e); }
+  }
+
+  async function deleteOperator(id) {
+    const name = operators[id]?.name || '';
+    const tasksWithOp = Object.values(tasks).filter(t => t.operatorId === id);
+    if (tasksWithOp.length) {
+      if (!confirm(`"${name}" tem ${tasksWithOp.length} tarefa(s). Remover mesmo assim?`)) return;
+    }
+    try {
+      await db.doc(`operators/${id}`).delete();
+      toast(`Operador "${name}" removido`);
+    } catch(e) { toast('Erro ao remover'); console.warn(e); }
+  }
+
+  window.openManageOperators = function() {
+    renderOperatorsList();
+    document.getElementById('modalOperators').hidden = false;
+  };
+  window.addOperator = addOperator;
+  window.deleteOperator = deleteOperator;
+
+  /* ── TASKS — RENDER ─────────────────────────────────────────── */
+  function isVisibleToday(t) {
+    // Show in Hoje if: created today, OR not concluido (carry-over from previous days)
+    const today = todayKey();
+    const tdate = t.createdAt ? t.createdAt.slice(0,10) : '';
+    if (tdate === today) return true;
+    if (t.status === 'pendente' || t.status === 'em_andamento') return true;
+    return false;
+  }
+
+  function getFilteredTasks() {
+    const search = (document.getElementById('searchInput').value || '').toLowerCase();
+    const opF = document.getElementById('filterOperator').value;
+    const statusF = document.getElementById('filterStatus').value;
+    const today = todayKey();
+
+    return Object.values(tasks).filter(t => {
+      if (currentTab === 'hoje') {
+        if (!isVisibleToday(t)) return false;
+      }
+      if (opF && t.operatorId !== opF) return false;
+      if (statusF === 'pendente' && t.status !== 'pendente') return false;
+      if (statusF === 'em_andamento' && t.status !== 'em_andamento') return false;
+      if (statusF === 'concluido' && t.status !== 'concluido') return false;
+      if (search) {
+        const name = (t.name||'').toLowerCase();
+        const obs = (t.observation||'').toLowerCase();
+        const doneObs = (t.doneObservation||'').toLowerCase();
+        const opName = (operators[t.operatorId]?.name||'').toLowerCase();
+        if (!name.includes(search) && !obs.includes(search) && !doneObs.includes(search) && !opName.includes(search)) return false;
+      }
+      return true;
+    }).sort((a,b) => {
+      // pendente first, em_andamento second, concluido last, then by date asc (older first)
+      const order = { pendente: 0, em_andamento: 1, concluido: 2 };
+      const oa = order[a.status] ?? 1;
+      const ob = order[b.status] ?? 1;
+      if (oa !== ob) return oa - ob;
+      return (a.createdAt||'').localeCompare(b.createdAt||'');
+    });
+  }
+
+  function renderTasks() {
+    if (currentTab === 'operadores') { renderOperatorView(); return; }
+    const area = document.getElementById('taskArea');
+    const list = getFilteredTasks();
+
+    if (list.length === 0) {
+      area.innerHTML = `
+        <div class="card">
+          <div class="empty-state">
+            <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="8" y="6" width="24" height="28" rx="3"/>
+              <path d="M14 15h12M14 20h8M14 25h6"/>
+            </svg>
+            <p>${currentTab === 'hoje' ? 'Nenhuma tarefa para hoje ainda.' : 'Nenhuma tarefa encontrada.'}</p>
+          </div>
+        </div>`;
+      return;
+    }
+
+    area.innerHTML = `<div class="card"><div class="task-list">${list.map(renderTaskItem).join('')}</div></div>`;
+  }
+
+  function renderTaskItem(t) {
+    const done = t.status === 'concluido';
+    const inProgress = t.status === 'em_andamento';
+    const opName = operators[t.operatorId]?.name || 'Sem operador';
+    const obs = t.observation ? `<div class="task-obs">📋 ${sanitize(t.observation)}</div>` : '';
+    const doneObs = done && t.doneObservation ? `<div class="task-obs" style="border-left-color:var(--ok)">✅ ${sanitize(t.doneObservation)}</div>` : '';
+    const doneTime = done && t.doneAt ? `<span class="tag tag-time">✓ ${brDatetime(t.doneAt)}</span>` : '';
+    const today = todayKey();
+    const isCarryOver = currentTab === 'hoje' && t.createdAt && t.createdAt.slice(0,10) !== today;
+    const carryTag = isCarryOver ? `<span class="tag" style="background:var(--danger-bg);color:var(--danger)">↩ Acumulada</span>` : '';
+    const createdTime = `<span class="tag tag-time">${brDatetime(t.createdAt)}</span>`;
+    const statusTag = done
+      ? `<span class="tag tag-done">Concluída</span>`
+      : inProgress
+        ? `<span class="tag tag-progress">Em andamento</span>`
+        : `<span class="tag tag-pending">Pendente</span>`;
+
+    // Check icon: white check for done, purple clock for in-progress, nothing for pending
+    const checkSvg = inProgress
+      ? `<svg viewBox="0 0 12 12" fill="none" stroke="var(--progress)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="4"/><path d="M6 4v2.5l1.5 1.5"/></svg>`
+      : `<svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-5"/></svg>`;
+
+    const itemClass = done ? ' done' : inProgress ? ' in-progress' : '';
+    const checkClass = done ? ' checked' : inProgress ? ' in-progress' : '';
+
+    return `
+    <div class="task-item${itemClass}" id="task-${t.id}">
+      <div class="task-check${checkClass}" onclick="toggleTask('${t.id}')" role="checkbox" aria-checked="${done}" tabindex="0" onkeydown="if(event.key===' ')toggleTask('${t.id}')">
+        ${checkSvg}
+      </div>
+      <div class="task-body">
+        <div class="task-name">${sanitize(t.name)}</div>
+        <div class="task-meta">
+          <span class="tag tag-operator">${sanitize(opName)}</span>
+          ${statusTag}
+          ${carryTag}
+          ${createdTime}
+          ${doneTime}
+        </div>
+        ${obs}${doneObs}
+      </div>
+      <div class="task-actions">
+        ${!done ? `<button class="icon-btn" onclick="openEditTask('${t.id}')" title="Editar" aria-label="Editar">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2.5l2 2L5 11H3V9l6.5-6.5z"/></svg>
+        </button>` : ''}
+        <button class="icon-btn danger" onclick="deleteTask('${t.id}')" title="Excluir" aria-label="Excluir">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3.5 4l.7 7.5h5.6l.7-7.5"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }
+
+  /* ── OPERATOR VIEW ──────────────────────────────────────────── */
+  function renderOperatorView() {
+    const area = document.getElementById('taskArea');
+    const search = (document.getElementById('searchInput').value || '').toLowerCase();
+    const statusF = document.getElementById('filterStatus').value;
+
+    const opEntries = Object.entries(operators).sort((a,b) => a[1].name.localeCompare(b[1].name));
+    if (!opEntries.length) {
+      area.innerHTML = `<div class="card"><div class="empty-state"><p>Nenhum operador cadastrado.<br>Clique em "Operadores" para adicionar.</p></div></div>`;
+      return;
+    }
+
+    area.innerHTML = opEntries.map(([opId, op]) => {
+      let opTasks = Object.values(tasks).filter(t => t.operatorId === opId);
+      if (statusF === 'pendente') opTasks = opTasks.filter(t => t.status === 'pendente');
+      if (statusF === 'em_andamento') opTasks = opTasks.filter(t => t.status === 'em_andamento');
+      if (statusF === 'concluido') opTasks = opTasks.filter(t => t.status === 'concluido');
+      if (search) opTasks = opTasks.filter(t => (t.name||'').toLowerCase().includes(search));
+      opTasks.sort((a,b) => {
+        const order = { pendente: 0, em_andamento: 1, concluido: 2 };
+        const oa = order[a.status] ?? 1;
+        const ob = order[b.status] ?? 1;
+        if (oa !== ob) return oa - ob;
+        return (b.createdAt||'').localeCompare(a.createdAt||'');
+      });
+
+      const done = opTasks.filter(t => t.status === 'concluido').length;
+      const andamento = opTasks.filter(t => t.status === 'em_andamento').length;
+      const pend = opTasks.filter(t => t.status === 'pendente').length;
+
+      return `
+      <div class="card" style="margin-bottom:0">
+        <div class="card-header">
+          <span class="card-title">${sanitize(op.name)}</span>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span class="tag tag-done">${done} concluída${done!==1?'s':''}</span>
+            ${andamento ? `<span class="tag tag-progress">${andamento} em andamento</span>` : ''}
+            <span class="tag tag-pending">${pend} pendente${pend!==1?'s':''}</span>
+          </div>
+        </div>
+        ${opTasks.length
+          ? `<div class="task-list">${opTasks.map(renderTaskItem).join('')}</div>`
+          : `<div class="empty-state" style="padding:24px"><p>Nenhuma tarefa${search?' encontrada':''}.</p></div>`
+        }
+      </div>`;
+    }).join('');
+  }
+
+  /* ── STATS ──────────────────────────────────────────────────── */
+  function updateStats() {
+    // Stats reflect what is visible in Hoje: tasks created today + carry-overs (not concluido from previous days)
+    const visibleToday = Object.values(tasks).filter(isVisibleToday);
+    document.getElementById('statTotal').textContent = visibleToday.length;
+    document.getElementById('statDone').textContent = visibleToday.filter(t => t.status === 'concluido').length;
+    document.getElementById('statProgress').textContent = visibleToday.filter(t => t.status === 'em_andamento').length;
+    document.getElementById('statPending').textContent = visibleToday.filter(t => t.status === 'pendente').length;
+  }
+
+  /* ── TASK ACTIONS ───────────────────────────────────────────── */
+  window.toggleTask = function(id) {
+    const t = tasks[id];
+    if (!t) return;
+    if (t.status === 'pendente') {
+      // pendente → em_andamento (direto, sem modal)
+      markInProgress(id);
+    } else if (t.status === 'em_andamento') {
+      // em_andamento → concluido (pede observação)
+      checkingTaskId = id;
+      document.getElementById('modalObsTitle').textContent = 'Concluir Tarefa';
+      document.getElementById('obsTaskName').textContent = t.name;
+      document.getElementById('obsTextInput').value = '';
+      document.getElementById('btnConfirmObs').textContent = '✓ Marcar Concluída';
+      document.getElementById('modalObs').hidden = false;
+      setTimeout(() => document.getElementById('obsTextInput').focus(), 60);
+    } else if (t.status === 'concluido') {
+      // concluido → pendente (reabre)
+      uncompleteTask(id);
+    }
+  };
+
+  async function markInProgress(id) {
+    try {
+      await db.doc(`tasks/${id}`).update({ status: 'em_andamento' });
+      toast('⏳ Tarefa em andamento');
+    } catch(e) { toast('Erro ao atualizar tarefa'); console.warn(e); }
+  }
+
+  async function uncompleteTask(id) {
+    try {
+      await db.doc(`tasks/${id}`).update({ status: 'pendente', doneAt: null, doneObservation: null });
+      toast('Tarefa reaberta');
+    } catch(e) { toast('Erro ao reabrir tarefa'); console.warn(e); }
+  }
+
+  window.confirmCheckTask = async function() {
+    if (!checkingTaskId) return;
+    const obs = document.getElementById('obsTextInput').value.trim();
+    try {
+      await db.doc(`tasks/${checkingTaskId}`).update({
+        status: 'concluido',
+        doneAt: nowISO(),
+        doneObservation: obs || null
+      });
+      toast('✅ Tarefa concluída!');
+      closeModal('modalObs');
+      checkingTaskId = null;
+    } catch(e) { toast('Erro ao concluir tarefa'); console.warn(e); }
+  };
+
+  window.deleteTask = async function(id) {
+    const t = tasks[id];
+    if (!t || !confirm(`Excluir "${t.name}"?`)) return;
+    try {
+      await db.doc(`tasks/${id}`).delete();
+      toast('Tarefa excluída');
+    } catch(e) { toast('Erro ao excluir'); console.warn(e); }
+  };
+
+  /* ── NEW / EDIT TASK ────────────────────────────────────────── */
+  window.openNewTask = function() {
+    editingTaskId = null;
+    document.getElementById('modalTaskTitle').textContent = 'Nova Tarefa';
+    document.getElementById('taskNameInput').value = '';
+    document.getElementById('taskOperatorInput').value = '';
+    document.getElementById('taskObsInput').value = '';
+    document.getElementById('btnSaveTask').textContent = 'Salvar Tarefa';
+    document.getElementById('modalTask').hidden = false;
+    setTimeout(() => document.getElementById('taskNameInput').focus(), 60);
+  };
+
+  window.openEditTask = function(id) {
+    const t = tasks[id];
+    if (!t) return;
+    editingTaskId = id;
+    document.getElementById('modalTaskTitle').textContent = 'Editar Tarefa';
+    document.getElementById('taskNameInput').value = t.name || '';
+    document.getElementById('taskOperatorInput').value = t.operatorId || '';
+    document.getElementById('taskObsInput').value = t.observation || '';
+    document.getElementById('btnSaveTask').textContent = 'Atualizar Tarefa';
+    document.getElementById('modalTask').hidden = false;
+    setTimeout(() => document.getElementById('taskNameInput').focus(), 60);
+  };
+
+  window.saveTask = async function() {
+    const name = document.getElementById('taskNameInput').value.trim();
+    const operatorId = document.getElementById('taskOperatorInput').value;
+    const obs = document.getElementById('taskObsInput').value.trim();
+
+    if (!name) { document.getElementById('taskNameInput').focus(); toast('Informe o nome da tarefa'); return; }
+    if (!operatorId) { document.getElementById('taskOperatorInput').focus(); toast('Selecione um operador'); return; }
+
+    const btn = document.getElementById('btnSaveTask');
+    btn.disabled = true;
+    btn.textContent = 'Salvando…';
+
+    try {
+      if (editingTaskId) {
+        await db.doc(`tasks/${editingTaskId}`).update({
+          name, operatorId,
+          observation: obs || null
+        });
+        toast('Tarefa atualizada');
+      } else {
+        await db.collection('tasks').add({
+          name, operatorId,
+          observation: obs || null,
+          status: 'pendente',
+          createdAt: nowISO(),
+          doneAt: null,
+          doneObservation: null
+        });
+        toast('Tarefa criada');
+      }
+      closeModal('modalTask');
+    } catch(e) {
+      toast('Erro ao salvar tarefa');
+      console.warn(e);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = editingTaskId ? 'Atualizar Tarefa' : 'Salvar Tarefa';
+    }
+  };
+
+  /* ── TABS ───────────────────────────────────────────────────── */
+  window.switchTab = function(tab) {
+    currentTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    renderTasks();
+  };
+
+  /* ── MODAL HELPERS ──────────────────────────────────────────── */
+  window.closeModal = function(id) {
+    document.getElementById(id).hidden = true;
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      ['modalTask','modalObs','modalOperators'].forEach(id => {
+        if (!document.getElementById(id).hidden) closeModal(id);
+      });
+    }
+  });
+
+  document.querySelectorAll('.modal-backdrop').forEach(bd => {
+    bd.addEventListener('click', e => { if (e.target === bd) bd.hidden = true; });
+  });
+
+})();
+</script>
