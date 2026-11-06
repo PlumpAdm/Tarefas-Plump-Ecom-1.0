@@ -418,6 +418,10 @@ select option { background: var(--surface); }
     </div>
   </div>
   <div class="header-right">
+    <button class="btn btn-ghost" id="btnTheme" onclick="toggleTheme()" aria-label="Alternar tema" title="Alternar tema">
+      <svg id="iconSun" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="7" r="2.5"/><path d="M7 1v1.5M7 11.5V13M1 7h1.5M11.5 7H13M3.05 3.05l1.06 1.06M9.89 9.89l1.06 1.06M3.05 10.95l1.06-1.06M9.89 4.11l1.06-1.06"/></svg>
+      <svg id="iconMoon" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" style="display:none"><path d="M11.5 9A5 5 0 015 2.5a5.5 5.5 0 100 9 5 5 0 006.5-2.5z"/></svg>
+    </button>
     <button class="btn btn-ghost" id="btnManageOperators" onclick="openManageOperators()">
       <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="4" r="2.2"/><path d="M2 11.5c0-2.2 2.2-4 5-4s5 1.8 5 4"/></svg>
       Operadores
@@ -998,6 +1002,26 @@ select option { background: var(--surface); }
       btn.textContent = editingTaskId ? 'Atualizar Tarefa' : 'Salvar Tarefa';
     }
   };
+
+  /* ── THEME TOGGLE ───────────────────────────────────────────── */
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('iconSun').style.display  = theme === 'dark'  ? 'block' : 'none';
+    document.getElementById('iconMoon').style.display = theme === 'light' ? 'block' : 'none';
+    try { localStorage.setItem('plump-theme', theme); } catch(e) {}
+  }
+
+  window.toggleTheme = function() {
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+  };
+
+  // Apply saved or system theme on load
+  (function() {
+    let saved; try { saved = localStorage.getItem('plump-theme'); } catch(e) {}
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    applyTheme(saved || (prefersDark ? 'dark' : 'light'));
+  })();
 
   /* ── TABS ───────────────────────────────────────────────────── */
   window.switchTab = function(tab) {
